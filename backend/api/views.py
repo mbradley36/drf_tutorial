@@ -2,6 +2,10 @@ import json
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from products.models import Product
+from products.serializers import ProductSerializer
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 def api_home(request, *args, **kwargs):
@@ -29,3 +33,17 @@ def usesModels(request, *args, **kwargs):
     if model_data:
         data = model_to_dict(model_data, fields=['id', 'title'])
     return JsonResponse(data)
+
+# the django-only way of defining calls would be:
+# if request.method != "POST":
+#   return Response({"detail": "GET NOT ALLLOWED"}, status=405)
+
+
+@api_view(["GET"])
+def drf_view(request, *arts, **kwargs):
+    instance = Product.objects.all().order_by("?").first()
+    data = {}
+    if instance:
+        # data = model_to_dict(model_data, fields=['id', 'title', 'sale_price'])
+        data = ProductSerializer(instance).data
+    return Response(data)
