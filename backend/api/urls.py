@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import api_home, usesModels, drf_view, drf_post_view
+from django.conf.urls import include
+
+from . import views
+
 
 urlpatterns = [
-    path('', api_home),
-    path('model', usesModels),
-    path('drf_model', drf_view),
-    path('drf_model_post', drf_post_view)
+    path('', views.api_home),  # localhost:8000/api/
+    path('products/', include('products.urls'))
 ]
