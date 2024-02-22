@@ -47,3 +47,14 @@ def drf_view(request, *arts, **kwargs):
         # data = model_to_dict(model_data, fields=['id', 'title', 'sale_price'])
         data = ProductSerializer(instance).data
     return Response(data)
+
+
+@api_view(["POST"])
+def drf_post_view(request, *arts, **kwargs):
+    serializer = ProductSerializer(data=request.data)
+    # can pass serializer.is_valid(raise_exception=True) to get better error messaging
+    if (serializer.is_valid()):
+        # instance = serializer.save()
+        # print(instance)
+        return Response(serializer.data)
+    return Response()
