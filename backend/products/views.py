@@ -2,12 +2,15 @@ from rest_framework import generics, mixins, permissions, authentication
 
 from api.authentication import TokenAuthentication
 
+from api.mixins import UserQuerySetMixin
 from .models import Product
 from .serializers import ProductSerializer
 from .permissions import IsStaffEditorPermission
 
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
+class ProductListCreateAPIView(
+        UserQuerySetMixin,
+        generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # authentication_classes = [
@@ -23,7 +26,13 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         content = serializer.validated_data.get('content') or None
         if content is None:
             content = title
-        serializer.save(content=content)
+        serializer.save(user=self.request.user, content=content)
+
+    # def get_queryset(self, *args, **kwargs):
+    #     qs = super().get_queryset(*args, **kwargs)
+    #     request = self.request
+    #     print(request.user)
+    #     return qs.filter(user=request.user)
 
 
 product_list_create_view = ProductListCreateAPIView.as_view()
