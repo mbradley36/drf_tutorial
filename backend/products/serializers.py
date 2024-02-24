@@ -10,6 +10,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         # fields can be instance methods, properties
         fields = [
+            'pk',
             'title',
             'content',
             'price',
